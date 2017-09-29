@@ -14,6 +14,8 @@ grammar Dubem;
 
     private static int stack_cur, stack_max;
 
+    private static int count_while = 0;
+
     private static void emit(String bytecode, int delta) {
 	System.out.println("   " + bytecode);
 	stack_cur += delta;
@@ -56,9 +58,18 @@ OPEN_P		: '(' ;
 CLOSE_P		: ')' ;
 ATTRIB      : '=' ;
 COMMA 		: ',' ;
+EQ			: '==' ;
+NE			: '!=' ;
+LT			: '<' ;
+LE			: '<=' ;
+GT			: '>' ;
+GE			: '>=' ;
 
 PRINT		: 'print';
 READ_INT	: 'read_int'; 
+WHILE 		: 'while' ;
+END 		: 'end' ;
+
 
 COMMENT     : '#' ~('\n')* { skip(); };
 
@@ -97,7 +108,7 @@ program
     ;
 
 statement
-  :	NL | st_print | st_attrib
+  :	NL | st_print | st_attrib | st_while
 ;
 
 st_print
@@ -105,11 +116,18 @@ st_print
 	{
 		emit("getstatic java/lang/System/out Ljava/io/PrintStream;", +1);
 	}
-	exp_aritmetic NL
+	exp_aritmetic 
 	{
-		emit("invokevirtual java/io/PrintStream/println(I)V\n", -2);
+		emit("invokevirtual java/io/PrintStream/print(I)V\n", -2);
 	}
-
+	(COMMA { emit("getstatic java/lang/System/out Ljava/io/PrintStream;", +1); } 
+			exp_aritmetic 
+		   { emit(" invokevirtual java/io/PrintStream/print(I)V\n", -2); }
+	)* NL
+	{
+		emit("getstatic java/lang/System/out Ljava/io/PrintStream;", +1);
+		emit(" invokevirtual java/io/PrintStream/println()V\n", -1);
+	}
 ;
 st_attrib
   : NAME ATTRIB exp_aritmetic NL
@@ -121,6 +139,34 @@ st_attrib
 
   		emit("istore "+symbol_table.indexOf($NAME.text), -1);
   	}
+;
+st_while
+  : WHILE
+  {
+  	 int local = ++count_while;
+  	 System.out.println("BEGIN_WHILE_"+local+":");
+  }
+  exp_comparison NL (statement)*
+  {
+  	 System.out.println("goto BEGIN_WHILE_"+local);
+
+  }
+  END
+  {
+  	 System.out.println("END_WHILE_"+local+":");
+  }
+  NL
+;
+exp_comparison
+  : exp_aritmetic op = ( EQ | NE | LT | LE | GT | GE ) exp_aritmetic
+  {
+  	 if($op.type == EQ) emit("if_icmpne END_WHILE_"+count_while, -2);
+   	 else if($op.type == NE) emit("if_icmpeq END_WHILE_"+count_while, -2);
+   	 else if($op.type == LT) emit("if_icmpge END_WHILE_"+count_while, -2);
+  	 else if($op.type == LE) emit("if_icmpgt END_WHILE_"+count_while, -2);
+  	 else if($op.type == GT) emit("if_icmple END_WHILE_"+count_while, -2);
+  	 else if($op.type == GE) emit("if_icmplt END_WHILE_"+count_while, -2);
+  }
 ;
 exp_aritmetic
     :   term ( op = ( PLUS | MINUS ) term 
@@ -134,8 +180,7 @@ term
 			($op.type == OVER ? "idiv": "irem"), -1); } 
 	)*
 	
-;
-    
+;    
 factor
     :   NUMBER
         	{ emit(" ldc " + $NUMBER.text, +1); }
