@@ -69,8 +69,8 @@ PRINT		: 'print';
 READ_INT	: 'read_int'; 
 WHILE 		: 'while' ;
 END 		: 'end' ;
-
-
+IF          : 'if' ;
+ELSE        : 'else' ;
 COMMENT     : '#' ~('\n')* { skip(); };
 
 NUMBER     	: '0'..'9'+ ;
@@ -108,7 +108,7 @@ program
     ;
 
 statement
-  :	NL | st_print | st_attrib | st_while
+  :	NL | st_print | st_attrib | st_while | st_if
 ;
 
 st_print
@@ -146,26 +146,41 @@ st_while
   	 int local = ++count_while;
   	 System.out.println("BEGIN_WHILE_"+local+":");
   }
-  exp_comparison NL (statement)*
+  s = exp_comparison NL
   {
-  	 System.out.println("goto BEGIN_WHILE_"+local);
-
+  	 emit($s.bytecode + " END_WHILE_"+local, -2);
   }
-  END
+  (statement)*
+  {
+  	 emit("goto BEGIN_WHILE_"+local, 0);
+  }
+  END NL
   {
   	 System.out.println("END_WHILE_"+local+":");
   }
-  NL
 ;
-exp_comparison
+st_if
+	: IF 
+	s = exp_comparison	NL
+		{ emit($s.bytecode + " NOT_IF", -2); }
+	(statement)*
+	{ 
+		emit("goto END_ELSE", 0);
+		System.out.println("NOT_IF:");
+	}
+	(ELSE NL (statement)* )?
+		{ System.out.println("END_ELSE:"); }
+	END NL
+;
+exp_comparison returns [String bytecode]
   : exp_aritmetic op = ( EQ | NE | LT | LE | GT | GE ) exp_aritmetic
   {
-  	 if($op.type == EQ) emit("if_icmpne END_WHILE_"+count_while, -2);
-   	 else if($op.type == NE) emit("if_icmpeq END_WHILE_"+count_while, -2);
-   	 else if($op.type == LT) emit("if_icmpge END_WHILE_"+count_while, -2);
-  	 else if($op.type == LE) emit("if_icmpgt END_WHILE_"+count_while, -2);
-  	 else if($op.type == GT) emit("if_icmple END_WHILE_"+count_while, -2);
-  	 else if($op.type == GE) emit("if_icmplt END_WHILE_"+count_while, -2);
+  	 if($op.type == EQ)      $bytecode = "if_icmpne";
+   	 else if($op.type == NE) $bytecode = "if_icmpeq";
+   	 else if($op.type == LT) $bytecode = "if_icmpge";
+  	 else if($op.type == LE) $bytecode = "if_icmpgt";
+  	 else if($op.type == GT) $bytecode = "if_icmple";
+  	 else if($op.type == GE) $bytecode = "if_icmplt";
   }
 ;
 exp_aritmetic

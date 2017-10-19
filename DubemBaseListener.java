@@ -78,6 +78,18 @@ public class DubemBaseListener implements DubemListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSt_if(DubemParser.St_ifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSt_if(DubemParser.St_ifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExp_comparison(DubemParser.Exp_comparisonContext ctx) { }
 	/**
 	 * {@inheritDoc}
