@@ -16,6 +16,8 @@ grammar Dubem;
 
     private static int count_while = 0;
 
+    private static int count_if = 0;
+
     private static void emit(String bytecode, int delta) {
 	System.out.println("   " + bytecode);
 	stack_cur += delta;
@@ -160,16 +162,17 @@ st_while
   }
 ;
 st_if
-	: IF 
+	: IF
+	{ int local = ++count_if; }
 	s = exp_comparison	NL
-		{ emit($s.bytecode + " NOT_IF", -2); }
+		{ emit($s.bytecode + " NOT_IF_"+local, -2); }
 	(statement)*
 	{ 
-		emit("goto END_ELSE", 0);
-		System.out.println("NOT_IF:");
+		emit("goto END_ELSE"+local, 0);
+		System.out.println("NOT_IF_"+local+":");
 	}
 	(ELSE NL (statement)* )?
-		{ System.out.println("END_ELSE:"); }
+		{ System.out.println("END_ELSE_"+local+":"); }
 	END NL
 ;
 exp_comparison returns [String bytecode]

@@ -84,6 +84,8 @@ public class DubemLexer extends Lexer {
 
 	    private static int count_while = 0;
 
+	    private static int count_if = 0;
+
 	    private static void emit(String bytecode, int delta) {
 		System.out.println("   " + bytecode);
 		stack_cur += delta;

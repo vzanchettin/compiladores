@@ -1,5 +1,25 @@
-a = 4
+# must print 1
 
-if a == 4
-  print a + 6
+a = 1
+b = 2
+c = 3
+if a == b
+    if b != c
+        print b
+    else
+        print c
+	end
+else
+    if a > b
+        print b
+    else
+        if a < b
+            if b > c
+                print c
+            else
+                print a
+			end
+		end
+	end
 end
+
