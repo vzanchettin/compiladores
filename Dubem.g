@@ -18,6 +18,8 @@ grammar Dubem;
 
     private static int count_if = 0;
 
+    private static int count_for = 0;
+
     private static void emit(String bytecode, int delta) {
 	System.out.println("   " + bytecode);
 	stack_cur += delta;
@@ -66,10 +68,12 @@ LT			: '<' ;
 LE			: '<=' ;
 GT			: '>' ;
 GE			: '>=' ;
+SEMICOLON   : ';' ;
 
 PRINT		: 'print';
 READ_INT	: 'read_int'; 
 WHILE 		: 'while' ;
+FOR         : 'for' ;
 END 		: 'end' ;
 IF          : 'if' ;
 ELSE        : 'else' ;
@@ -110,7 +114,7 @@ program
     ;
 
 statement
-  :	NL | st_print | st_attrib | st_while | st_if
+  :	NL | st_print | st_attrib NL| st_for | st_while | st_if
 ;
 
 st_print
@@ -132,7 +136,7 @@ st_print
 	}
 ;
 st_attrib
-  : NAME ATTRIB exp_aritmetic NL
+  : NAME ATTRIB exp_aritmetic
   	{
   		if(symbol_table.indexOf($NAME.text) == -1){
   			symbol_table.add($NAME.text);
@@ -160,6 +164,29 @@ st_while
   {
   	 System.out.println("END_WHILE_"+local+":");
   }
+;
+st_for
+	: FOR
+	{ int local = ++count_for; }
+	st_attrib SEMICOLON
+		{ System.out.println("FOR_COMP_"+local+":"); }
+	s = exp_comparison SEMICOLON
+		{ 
+			emit($s.bytecode + " END_FOR_"+local, -2);
+			emit("goto FOR_"+local, 0);
+			System.out.println("FOR_INC_"+local+":");
+		}
+	st_attrib NL
+		{ 
+			emit("goto FOR_COMP_"+local, 0);
+			System.out.println("FOR_"+local+":"); 
+		}
+	(statement)*
+		{ 
+			emit("goto FOR_INC_"+local, 0);
+			System.out.println("END_FOR_"+local+":"); 
+		}
+	END NL
 ;
 st_if
 	: IF
