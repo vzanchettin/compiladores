@@ -1,6 +1,6 @@
 // Generated from Dubem.g by ANTLR 4.5.3
 
-    import java.util.ArrayList;
+  import java.util.ArrayList;
 
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -78,18 +78,6 @@ public class DubemBaseListener implements DubemListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSt_for(DubemParser.St_forContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSt_for(DubemParser.St_forContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSt_if(DubemParser.St_ifContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -97,6 +85,18 @@ public class DubemBaseListener implements DubemListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSt_if(DubemParser.St_ifContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSt_for(DubemParser.St_forContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSt_for(DubemParser.St_forContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -114,13 +114,13 @@ public class DubemBaseListener implements DubemListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExp_aritmetic(DubemParser.Exp_aritmeticContext ctx) { }
+	@Override public void enterExp_arithmetic(DubemParser.Exp_arithmeticContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExp_aritmetic(DubemParser.Exp_aritmeticContext ctx) { }
+	@Override public void exitExp_arithmetic(DubemParser.Exp_arithmeticContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

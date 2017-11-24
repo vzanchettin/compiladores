@@ -1,6 +1,6 @@
 // Generated from Dubem.g by ANTLR 4.5.3
 
-    import java.util.ArrayList;
+  import java.util.ArrayList;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -60,16 +60,6 @@ public interface DubemListener extends ParseTreeListener {
 	 */
 	void exitSt_while(DubemParser.St_whileContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DubemParser#st_for}.
-	 * @param ctx the parse tree
-	 */
-	void enterSt_for(DubemParser.St_forContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link DubemParser#st_for}.
-	 * @param ctx the parse tree
-	 */
-	void exitSt_for(DubemParser.St_forContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link DubemParser#st_if}.
 	 * @param ctx the parse tree
 	 */
@@ -79,6 +69,16 @@ public interface DubemListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSt_if(DubemParser.St_ifContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DubemParser#st_for}.
+	 * @param ctx the parse tree
+	 */
+	void enterSt_for(DubemParser.St_forContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DubemParser#st_for}.
+	 * @param ctx the parse tree
+	 */
+	void exitSt_for(DubemParser.St_forContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DubemParser#exp_comparison}.
 	 * @param ctx the parse tree
@@ -90,15 +90,15 @@ public interface DubemListener extends ParseTreeListener {
 	 */
 	void exitExp_comparison(DubemParser.Exp_comparisonContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link DubemParser#exp_aritmetic}.
+	 * Enter a parse tree produced by {@link DubemParser#exp_arithmetic}.
 	 * @param ctx the parse tree
 	 */
-	void enterExp_aritmetic(DubemParser.Exp_aritmeticContext ctx);
+	void enterExp_arithmetic(DubemParser.Exp_arithmeticContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link DubemParser#exp_aritmetic}.
+	 * Exit a parse tree produced by {@link DubemParser#exp_arithmetic}.
 	 * @param ctx the parse tree
 	 */
-	void exitExp_aritmetic(DubemParser.Exp_aritmeticContext ctx);
+	void exitExp_arithmetic(DubemParser.Exp_arithmeticContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DubemParser#term}.
 	 * @param ctx the parse tree

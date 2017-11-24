@@ -1,11 +1,2 @@
-a = 4
-b = 10
-c = read_int
-print (b + a), a + c
-
-while a < 10
-
-    print a
-    a = a + 1
-
-end
+a = "adsclll"
+print a

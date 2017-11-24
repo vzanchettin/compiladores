@@ -7,32 +7,16 @@ invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
 .method public static main([Ljava/lang/String;)V
-    ldc 15
-   istore 1
-FOR_COMP_1:
-    iload 1
-    ldc 0
-   if_icmple END_FOR_1
-   goto FOR_1
-FOR_INC_1:
-    iload 1
-    ldc 1
-   isub
-   istore 1
-   goto FOR_COMP_1
-FOR_1:
+    ldc "adsclll"
+   astore 0
    getstatic java/lang/System/out Ljava/io/PrintStream;
-    iload 1
-   invokevirtual java/io/PrintStream/print(I)V
+    aload 0
+    invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
 
    getstatic java/lang/System/out Ljava/io/PrintStream;
     invokevirtual java/io/PrintStream/println()V
 
-   goto FOR_INC_1
-END_FOR_1:
   return
 .limit stack 2
-.limit locals 2
+.limit locals 11
 .end method
-; symbols: [args, a]
-; symbols: [true, true]

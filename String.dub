@@ -1,0 +1,4 @@
+a = 'vinicio'
+
+
+print a
