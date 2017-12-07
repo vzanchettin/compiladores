@@ -20,6 +20,26 @@ public interface DubemListener extends ParseTreeListener {
 	 */
 	void exitProgram(DubemParser.ProgramContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link DubemParser#procedure}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedure(DubemParser.ProcedureContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DubemParser#procedure}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedure(DubemParser.ProcedureContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DubemParser#main}.
+	 * @param ctx the parse tree
+	 */
+	void enterMain(DubemParser.MainContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DubemParser#main}.
+	 * @param ctx the parse tree
+	 */
+	void exitMain(DubemParser.MainContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link DubemParser#statement}.
 	 * @param ctx the parse tree
 	 */
@@ -79,6 +99,16 @@ public interface DubemListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSt_for(DubemParser.St_forContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link DubemParser#st_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterSt_call(DubemParser.St_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link DubemParser#st_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitSt_call(DubemParser.St_callContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link DubemParser#exp_comparison}.
 	 * @param ctx the parse tree

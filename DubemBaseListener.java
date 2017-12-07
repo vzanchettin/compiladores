@@ -30,6 +30,30 @@ public class DubemBaseListener implements DubemListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterProcedure(DubemParser.ProcedureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProcedure(DubemParser.ProcedureContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMain(DubemParser.MainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMain(DubemParser.MainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStatement(DubemParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -97,6 +121,18 @@ public class DubemBaseListener implements DubemListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSt_for(DubemParser.St_forContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSt_call(DubemParser.St_callContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSt_call(DubemParser.St_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

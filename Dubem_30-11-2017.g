@@ -23,9 +23,9 @@ grammar Dubem;
 
   private static int stack_cur, stack_max, errors;
 
-  private static boolean isArray = false;
-
   private static void emit(String bytecode, int delta) {
+
+  private static boolean isArray = false;
 
     System.out.println("   " + bytecode);
     stack_cur += delta;
@@ -65,15 +65,12 @@ ATTRIB       : '=' ;
 SEMICOLON    : ';' ;
 COMMA        : ',' ;
 
-PROCEDURE    : 'procedure' ;
-ARRAY        : 'array' ;
-
-EQ           : '==' ;
-NE           : '!=' ;
+EQ           : '==';
+NE           : '!=';
 LT           : '<' ;
-LE           : '<=' ;
+LE           : '<=';
 GT           : '>' ;
-GE           : '>=' ;
+GE           : '>=';
 OPEN_B       : '[' ;
 CLOSE_B      : ']' ;
 
@@ -131,19 +128,8 @@ program
   System.out.println(".end method");
 }  
 ;
-procedure
-  //{
-    //System.out.println(".method public static " + $NAME.text + " ()V");
-  //}
-
-  : PROCEDURE NAME OPEN_P CLOSE_P NL (statement)* END NL
-
-;
-main
-  : (statement)*
-;
 statement
-: NL | st_print | st_attrib NL | st_while | st_for | st_if | st_for | st_call
+: NL | st_print | st_attrib NL | st_while | st_for | st_if
 ;
 st_print
 : PRINT
@@ -273,11 +259,6 @@ st_attrib NL
   System.out.println("END_FOR_"+local+":"); 
 }
 END NL
-;
-st_call
-  : NAME OPEN_P CLOSE_P NL
-{
-}
 ;
 exp_comparison returns [String bytecode]
 : e1 = exp_arithmetic op = ( EQ | NE | LT | LE | GT | GE ) e2 = exp_arithmetic

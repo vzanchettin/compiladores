@@ -12,6 +12,7 @@ grammar Dubem;
     private static ArrayList<String> symbol_table;
     private static ArrayList<Boolean> used_variables;    
     private static int stack_cur, stack_max, while_counter, if_counter, count_for;
+    private static boolean variable_string;
     private static void emit(String bytecode, int delta) {   
         System.out.println("    "+bytecode);        
         stack_cur += delta;
@@ -53,6 +54,8 @@ OPEN_P          : '(' ;
 CLOSE_P         : ')' ;
 ATTRIB          : '=' ;
 SEMI_COLON	: ';' ; 
+OPEN_B		: '[' ;
+CLOSE_B		: ']' ;
 
 EQ	        : '==' ;
 NE              : '!=' ;
@@ -70,6 +73,7 @@ IF		: 'if';
 ELSE		: 'else';
 FOR		: 'for';
 END		: 'end' ;
+ARRAY		: 'array' ;
 
 STRING          : '"' ~('"')* '"' ;
 COMMENT         : '#' ~('\n')* {skip(); } ;
@@ -86,34 +90,29 @@ program
             System.out.println(".class  public Test");
             System.out.println(".super  java/lang/Object");
             System.out.println("");
-            System.out.println(";");
-            System.out.println("; initializes java.lang.Object");
-            System.out.println(";");
             System.out.println(".method public <init>()V");
-            System.out.println("aload_0");
-            System.out.println("invokenonvirtual java/lang/Object/<init>()V");
-            System.out.println("return");
+            System.out.println("    aload_0");
+            System.out.println("    invokenonvirtual java/lang/Object/<init>()V");
+            System.out.println("    return");
             System.out.println(".end method");
             System.out.println("");
-            System.out.println("");
             System.out.println(".method public static main([Ljava/lang/String;)V");
-            System.out.println("");
+            //System.out.println("");
         }
         ( statement )*
         {
             System.out.println("");
-            System.out.println("; end of method");
-            System.out.println("return");
+            System.out.println("    return");
             System.out.println("");
-            System.out.println(".limit stack "+stack_max);
-            System.out.println(".limit locals "+symbol_table.size());
+            System.out.println("    .limit stack  "+stack_max);
+            System.out.println("    .limit locals "+symbol_table.size());
             System.out.println(".end method");
         }
     ;
 
 statement
     :
-        NL | st_print | st_attrib NL | read_int | st_while | st_if | st_for
+        NL | st_print | st_attrib NL | read_int | read_string | st_while | st_if | st_for
     ;
 
 st_print
@@ -136,7 +135,7 @@ st_print
 	}
         e2 = exp_arithmetic  
         {
-	if ($e1.type == 'a'){
+	if ($e2.type == 'a'){
 	    emit("invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V", -2);
 	}else
             emit("invokevirtual java/io/PrintStream/print(I)V", -2);
@@ -147,19 +146,46 @@ st_print
 
 st_attrib
     :  
-        NAME ATTRIB exp_arithmetic
+        NAME  
+
+	{boolean is_array = false; }
+	(
+	{String var = $NAME.text;
+	symbol_table.add(var);
+	int i = symbol_table.indexOf(var);
+	emit("aload "+i, 1);
+	is_array = true;}
+	OPEN_B 
+	e1 = exp_arithmetic CLOSE_B)?
+
+	ATTRIB
+	( 
+	e2 = exp_arithmetic
         {
+	//if ($e2.type == 'i' || $e2.type == 'a'){
+
             String var = $NAME.text;
             if(!symbol_table.contains(var)) {
                 symbol_table.add(var);
 		used_variables.add(false);
                 int i = symbol_table.indexOf(var);
-                emit("istore "+i + "\n", -1);
-            } else {
-                int i = symbol_table.indexOf(var);
-                emit("istore "+i + "\n", -1);
+		if ($e2.type == 'a'){
+		    emit("astore "+i + "\n", -1);
+		    variable_string = true;
+		}
+		else if ($e2.type == 'i'){
+		    if(is_array == true) {
+                	emit("iastore "+i + "\n", -3);
+		    }else {
+			emit("istore "+i + "\n", -1);
+		    }
+		}
             }
         }
+	//}else {
+	{
+	System.out.println("newarray int");}	
+	ARRAY exp_arithmetic) 
     ;
 	
 read_int
@@ -168,6 +194,15 @@ read_int
 	{
             System.out.println("\t");
 	    emit("invokestatic Runtime/readInt()I", +1);
+	}
+	;
+
+read_string
+	:
+	READ_STRING
+	{
+            System.out.println("\t");
+	    emit("invokestatic Runtime/readString()Ljava/lang/String", +1);
 	}
 	;
 
@@ -270,7 +305,13 @@ factor returns [char type]
 		if (symbol_table != null){
 			if(symbol_table.contains(var)) {
 				int i = symbol_table.indexOf(var);
-				emit("iload "+i, 1);
+				if(variable_string == false){				
+				    emit("iload "+i, 1);
+				    $type = 'i';
+				}else{
+				    emit("aload  "+i, 1);
+				    $type = 'a';
+				}
 				used_variables.set(i, true);
 			} else {
 				System.err.println("non-existent variable: " + var);
@@ -280,15 +321,20 @@ factor returns [char type]
 				System.err.println("non-existent variable: " + var);
 				System.exit(1);
 			}
-		$type = 'i';
         }
 	| READ_INT
 	{
-		emit("invokestatic Runtime/readInt()I", +1);
+	    emit("invokestatic Runtime/readInt()I", +1);
 	}
 	| STRING
-	    {
-	      emit("ldc " + $STRING.text, +1);
-	      $type = 'a';
-	    }
+	{
+	    emit("ldc " + $STRING.text, +1);
+	    $type = 'a';
+	}
+	| READ_STRING
+	{	
+	    System.out.println("");
+	    emit("invokestatic Runtime/readString()Ljava/lang/String;", +1);
+	    $type = 'a';
+	}
     ;

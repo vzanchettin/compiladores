@@ -1,0 +1,8 @@
+procedure cubo ()
+    n = 4
+    print n * n * n
+end
+
+n = 1
+cubo()
+print n
