@@ -1,0 +1,9 @@
+a = 1 + 2 * 3
+b = "xyz"
+v = array 10
+
+v[7] = 9
+
+print a
+print b
+print v[7]
