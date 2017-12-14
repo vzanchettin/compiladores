@@ -5,5 +5,9 @@ v = array 10
 v[7] = 9
 
 print a
+
 print b
+
+print length v
+
 print v[7]

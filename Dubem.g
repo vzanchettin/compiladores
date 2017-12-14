@@ -66,7 +66,6 @@ SEMICOLON    : ';' ;
 COMMA        : ',' ;
 
 PROCEDURE    : 'procedure' ;
-ARRAY        : 'array' ;
 
 EQ           : '==' ;
 NE           : '!=' ;
@@ -81,6 +80,9 @@ PRINT        : 'print';
 READ_INT     : 'read_int';
 READ_STRING  : 'read_string';
 STRING       : '"' ~('"')* '"';
+
+ARRAY        : 'array' ;
+LENGTH       : 'length' ;
 
 IF           : 'if';
 ELSE         : 'else';
@@ -112,6 +114,8 @@ program
   System.out.println(".end method");
   System.out.println(".method public static main([Ljava/lang/String;)V");
 
+  symbol_table.add("args");
+  symbol_type.add('-');
 }   
 
 ( statement )*
@@ -126,11 +130,12 @@ program
   }
   
   System.out.println("  return"); 
-  System.out.println(".limit stack"+ " " + stack_max); 
-  System.out.println(".limit locals"+ " " + symbol_table.size()+1); 
+  System.out.println(".limit stack"+ " " + stack_max + 1); 
+  System.out.println(".limit locals"+ " " + symbol_table.size()); 
   System.out.println(".end method");
 }  
 ;
+
 procedure
   //{
     //System.out.println(".method public static " + $NAME.text + " ()V");
@@ -182,45 +187,58 @@ e1 = exp_arithmetic
 }
 ;
 st_attrib
-: NAME ATTRIB
-e1 = exp_arithmetic
-{
-
-  if(symbol_table.indexOf($NAME.text) == -1){
-    symbol_table.add($NAME.text);
-    symbol_table_not_used.add($NAME.text);
-
-    if($e1.type == 'i')
-      symbol_type.add('i');
-    else
-      symbol_type.add('a');
-    
-  }
-  else
+: NAME ( OPEN_B 
   {
+     if (symbol_table.indexOf($NAME.text) == -1) {
+       System.err.println("Undefined variable:" + $NAME.text );
+       System.exit(1);
+     }
 
-    if(symbol_type.get(symbol_table.indexOf($NAME.text)) != $e1.type)
+     int end = symbol_table.indexOf($NAME.text);
 
-    {
-      if($e1.type == 'i')
-      {
+     if (symbol_type.get(end) != 'v' ) {
+      System.err.println("is not a vector");
+      System.exit('1');
+     }
 
-        System.err.println("ERROR: "+$NAME.text+" is an string");
-        errors++;
-
-      }
-      else
-      {
-
-        System.err.println("ERROR: "+$NAME.text+" is an integer");
-        errors++;
-
-      }
-    }
+      emit("aload " + end, -1);
   }
 
-  emit(symbol_type.get(symbol_table.indexOf($NAME.text)) + "store " + symbol_table.indexOf($NAME.text), -1);
-}
+e2 = exp_arithmetic CLOSE_B )? ATTRIB
+( e1 = exp_arithmetic
+    {
+
+      if(symbol_table.indexOf($NAME.text) == -1){
+        symbol_table.add($NAME.text);
+        symbol_table_not_used.add($NAME.text);
+
+        if($e1.type == 'i')
+          symbol_type.add('i');
+        else if ($e1.type == 'a')
+          symbol_type.add('a');
+        
+      }
+    
+    int end = symbol_table.indexOf($NAME.text);
+    if (symbol_type.get(end) == 'i') {
+      emit("istore " + end, -1);
+    } else if (symbol_type.get(end) == 'a') {
+      emit("astore " + end, -1);
+    } else {
+      emit ("iastore", -3);
+    }
+   System.out.println();
+  }
+
+  |ARRAY exp_arithmetic
+    {       
+        emit("newarray int", 0);
+        symbol_table.add($NAME.text);
+        symbol_type.add('v');
+        emit("astore " + symbol_table.indexOf($NAME.text), -1);
+        System.out.println(); 
+    } 
+  )
 ;
 st_while
 : WHILE 
@@ -336,12 +354,31 @@ factor returns [char type]
 {
   $type = $exp_arithmetic.type;
 }
-|   NAME
+|   NAME ( OPEN_B 
+
+{
+     int end = symbol_table.indexOf($NAME.text);
+
+     if (symbol_type.get(end) != 'v' ) {
+      System.err.println("is not a vector");
+      System.exit('1');
+     }
+
+      emit("aload " + end, -1);
+}
+
+  exp_arithmetic CLOSE_B )?
 {
   if(symbol_table.indexOf($NAME.text) >= 0){
-    emit(" " + symbol_type.get(symbol_table.indexOf($NAME.text)) + "load " + symbol_table.indexOf($NAME.text), +1);
-    symbol_table_not_used.remove($NAME.text);
-    $type = symbol_type.get(symbol_table.indexOf($NAME.text));
+    
+    if ((symbol_type.get(symbol_table.indexOf($NAME.text)) == 'v')) {
+      emit(" iaload ", -1);      
+      $type = 'i';
+    } else {
+       emit(" " + symbol_type.get(symbol_table.indexOf($NAME.text)) + "load " + symbol_table.indexOf($NAME.text), +1);
+       symbol_table_not_used.remove($NAME.text);
+       $type = symbol_type.get(symbol_table.indexOf($NAME.text));
+   }
   }
   else
   { 
@@ -363,4 +400,14 @@ factor returns [char type]
   emit(" ldc " + $STRING.text, +1); 
   $type = 'a';
 }
+|   LENGTH NAME
+{
+  //ver se esta na tabela de simbolos
+  int end = symbol_table.indexOf($NAME.text);
+
+  emit("aload " +  end, +1);
+  emit("arraylength", +0); 
+  $type = 'i';
+}
+
 ;

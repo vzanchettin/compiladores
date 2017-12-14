@@ -1,5 +1,5 @@
-C:\Users\vzanc\Desktop\compiladores-master>java -jar antlr-4.5.3.jar Dubem.g
-
-C:\Users\vzanc\Desktop\compiladores-master>"c:\Program Files\Java\jdk1.8.0_151\bin\javac.exe" -cp antlr-4.5.3.jar Dubem*.java
-
-C:\Users\vzanc\Desktop\compiladores-master>java -cp antlr-4.5.3.jar;. DubemParser < Test-array-simple.dub > Test.j
+java -jar antlr-4.5.3.jar Dubem.g
+"c:\Program Files\Java\jdk1.8.0_151\bin\javac.exe" -cp antlr-4.5.3.jar Dubem*.java
+java -cp antlr-4.5.3.jar;. DubemParser < test-09-arrays.dub > Test.j
+java -jar jasmin-2.4.jar Test.j
+java Test

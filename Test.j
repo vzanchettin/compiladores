@@ -7,30 +7,73 @@ invokenonvirtual java/lang/Object/<init>()V
 return
 .end method
 .method public static main([Ljava/lang/String;)V
-    ldc 15
-   istore 0
-FOR_COMP_1:
-    iload 0
+   getstatic java/lang/System/out Ljava/io/PrintStream;
+    ldc "array size?"
+    invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V
+
+   getstatic java/lang/System/out Ljava/io/PrintStream;
+    invokevirtual java/io/PrintStream/println()V
+
+    invokestatic Runtime/readInt()I
+   istore 1
+
+    iload 1
+   newarray int
+   astore 2
+
     ldc 0
-   if_icmple END_FOR_1
-   goto FOR_1
-FOR_INC_1:
-    iload 0
+   istore 3
+
+BEGIN_WHILE_1:
+    iload 3
+   aload 2
+   arraylength
+   if_icmpge END_WHILE_1
+   aload 2
+    iload 3
+    iload 3
+    ldc 1
+   iadd
+    iload 3
+    ldc 1
+   iadd
+   imul
+   iastore
+
+    iload 3
+    ldc 1
+   iadd
+   istore 3
+
+   goto BEGIN_WHILE_1
+END_WHILE_1:
+   aload 2
+   arraylength
     ldc 1
    isub
-   istore 0
-   goto FOR_COMP_1
-FOR_1:
+   istore 3
+
+BEGIN_WHILE_2:
+    iload 3
+    ldc 0
+   if_icmplt END_WHILE_2
    getstatic java/lang/System/out Ljava/io/PrintStream;
-    iload 0
+   aload 2
+    iload 3
+    iaload 
     invokevirtual java/io/PrintStream/print(I)V
 
    getstatic java/lang/System/out Ljava/io/PrintStream;
     invokevirtual java/io/PrintStream/println()V
 
-   goto FOR_INC_1
-END_FOR_1:
+    iload 3
+    ldc 1
+   isub
+   istore 3
+
+   goto BEGIN_WHILE_2
+END_WHILE_2:
   return
-.limit stack 2
-.limit locals 11
+.limit stack 31
+.limit locals 4
 .end method
