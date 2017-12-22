@@ -1,0 +1,7 @@
+procedure square (n)
+    a = n * n
+    print a
+end
+
+square(8)
+

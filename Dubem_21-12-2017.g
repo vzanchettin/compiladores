@@ -178,7 +178,9 @@ procedure
 
 }
 END NL
+
 ;
+
 function 
 : FUNCTION NAME OPEN_P ( parameters )? CLOSE_P NL 
 { 
@@ -224,6 +226,16 @@ function
 }
 END NL
 ;
+
+
+
+
+
+
+
+
+
+
 parameters
 :  NAME 
 {   
@@ -239,12 +251,17 @@ parameters
 }
 )*
 ;
+
+
+
+
 main
 :
 {
   symbol_table.add("args");
   symbol_type.add('-');
   System.out.println(".method public static main([Ljava/lang/String;)V");
+
 }
 (statement)*
 {
@@ -419,8 +436,8 @@ st_call
 ;
 st_return
 : RETURN exp_arithmetic NL
-{
-  emit("  ireturn", -1);
+  {
+    emit("  ireturn", -1);
   }
 ;
 

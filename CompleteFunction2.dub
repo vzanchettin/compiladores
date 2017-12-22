@@ -1,0 +1,12 @@
+function greater (a, b)
+    if a > b
+        c = a
+    else
+        c = b
+    end
+    return c
+end
+
+x = 8
+print greater(4, x)
+
